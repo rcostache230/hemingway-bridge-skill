@@ -1,0 +1,20 @@
+{
+  "name": "bridge",
+  "version": "0.1.0",
+  "description": "Hemingway bridge for Claude Code sessions. End a session the way Hemingway ended a writing day: stop while it is going well, knowing exactly what comes next, and write that down. /bridge writes a forward-looking note (next sentence, where I stopped, status, details that will be forgotten, intention, open loops); a SessionStart hook shows open bridges to the next session, and \"resume\" reads the note, checks it against reality, marks it crossed and does the next sentence instead of re-exploring. Plain Markdown files, no Obsidian needed (but drops into a vault if you have one). bash only, sends nothing.",
+  "author": {
+    "name": "Razvan Costache"
+  },
+  "homepage": "https://github.com/rcostache230/hemingway-bridge-skill",
+  "license": "MIT",
+  "keywords": [
+    "skill",
+    "hook",
+    "hemingway",
+    "handoff",
+    "continuity",
+    "session",
+    "memory",
+    "context"
+  ]
+}

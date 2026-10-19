@@ -12,27 +12,30 @@ window, and the next one wakes up knowing nothing but what is on disk. Without a
 its first twenty minutes re-reading, re-discovering and re-deciding things that were obvious an
 hour ago.
 
-**`/bridge`** writes a short, forward-looking note when you stop. The next session sees it at
-startup and, when you say **`resume`**, reads it, checks it against reality, marks it crossed and
-does the next sentence. No re-exploring.
+**`/bridge`** writes a short, forward-looking note when you stop. In the next session,
+**`/bridge resume`** reads it, checks it against reality, marks it crossed and does the next
+sentence. No re-exploring.
 
 ## Install
 
-In Claude Code (CLI or desktop app):
+Install the standalone skill from your terminal, in the project where you want to use it:
 
-```
-/plugin marketplace add rcostache230/hemingway-bridge-skill
-/plugin install bridge@hemingway-bridge
+```bash
+npx skills add rcostache230/hemingway-bridge-skill --skill bridge --agent claude-code
 ```
 
-Or try it from a checkout without installing:
+Add `--global` to make it available across projects.
+
+Or copy the skill into Claude Code's personal skills directory:
 
 ```bash
 git clone https://github.com/rcostache230/hemingway-bridge-skill.git
-claude --plugin-dir ./hemingway-bridge-skill
+mkdir -p ~/.claude/skills
+cp -R hemingway-bridge-skill/skills/bridge ~/.claude/skills/bridge
 ```
 
-Needs only bash (3.2 or newer), awk and sed. No Python, no node, no network. Sends nothing anywhere.
+The helper needs only bash (3.2 or newer), awk and sed at runtime. Runs locally and sends nothing
+anywhere. Use `/bridge resume` or `/bridge list` to load saved bridges in a new session.
 
 ## Use
 
@@ -87,27 +90,23 @@ in this order:
 4. `~/.claude/bridges` (default)
 
 Writing a new bridge for a project moves the previous one to `archive/`. A resumed bridge gets
-`crossed: <date>` in its frontmatter and stops showing up at session start. Obsidian is optional;
+`crossed: <date>` in its frontmatter and stops showing up in the default list. Obsidian is optional;
 point `BRIDGE_DIR` into a vault and bridges get backlinks and search for free.
 
 ## How it works
 
 ```
-.claude-plugin/plugin.json          the plugin manifest
-.claude-plugin/marketplace.json     this repo is also a one-plugin marketplace
-hooks/hooks.json                    SessionStart hook: runs `bridge.sh recall`
 skills/bridge/SKILL.md              the procedure: write, resume, list; what makes a bridge good
-skills/bridge/scripts/bridge.sh     bookkeeping: list, recall, slug, path, archive, cross, dir
+skills/bridge/scripts/bridge.sh     bookkeeping: list, slug, path, archive, cross, dir
 skills/bridge/assets/bridge-template.md
 ```
 
-The hook prints the open bridges and the resume rule inside `<bridges>` tags, or nothing at all
-when there is none, so an idle install costs zero context.
+The skill loads saved bridges when you ask to resume or list them.
 
 ## Hacking on it
 
 ```bash
-claude plugin validate .
+bash -n skills/bridge/scripts/bridge.sh
 BRIDGE_DIR=/tmp/bridges skills/bridge/scripts/bridge.sh list
 ```
 

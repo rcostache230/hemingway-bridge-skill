@@ -2,7 +2,6 @@
 # Hemingway bridge bookkeeping for the /bridge skill. Written for macOS /bin/bash 3.2; runs on any bash 3.2+.
 #
 #   bridge.sh list [--all] [--brief]   open bridges newest first (--all: crossed too; --brief: one line each)
-#   bridge.sh recall                   what the SessionStart hook prints: open bridges plus the resume rule, or nothing
 #   bridge.sh slug "<project>"         project name -> file slug
 #   bridge.sh path "<project>"         project name -> full path of its bridge file
 #   bridge.sh archive <slug>           move <dir>/<slug>.md to <dir>/archive/<slug> <stamp>.md (no-op if absent)
@@ -81,21 +80,5 @@ case "$cmd" in
         printf '%s %s  %s%s\n  next: %s\n  folder: %s\n  file: %s\n\n' "$d" "$t" "$p" "${c:+  [crossed $c]}" "${ns:-?}" "${folder:--}" "$f"
       fi
     done ;;
-  recall)
-    # SessionStart hook. Prints nothing when there is no open bridge, so an idle install costs zero context.
-    cat > /dev/null 2>&1 <&0 || true   # drain the hook's stdin JSON; the folder match uses $PWD
-    open=$(rows 0)
-    [ -n "$open" ] || exit 0
-    here="$PWD"
-    echo "<bridges>"
-    echo "## Open bridges — Hemingway bridges left by earlier sessions: where work stopped and the exact next action (written by /bridge)"
-    printf '%s\n' "$open" | while IFS="$US" read -r d t p folder c ns f; do
-      mark=""
-      case "$folder" in "$here"|"$here"/*) mark="  ← this folder" ;; esac
-      case "$here" in "$folder"/*) [ -n "$folder" ] && mark="  ← this folder" ;; esac
-      printf -- '- %s %s · %s → %s\n    ↳ %s%s%s\n' "$d" "$t" "$p" "${ns:-?}" "$f" "${folder:+  · folder: $folder}" "$mark"
-    done
-    echo "If one of these is the work the user is here for (its folder matches the current directory, or they say resume, continue, where were we, what was I doing), use the /bridge skill's resume procedure before anything else: read the note, check it against reality, mark it crossed with bridge.sh cross <slug>, then do its next sentence instead of re-exploring. Otherwise leave them alone and mention them only if relevant."
-    echo "</bridges>" ;;
-  *) echo "usage: bridge.sh list [--all] [--brief] | recall | slug <project> | path <project> | archive <slug> | cross <slug> [date] | dir" >&2; exit 2 ;;
+  *) echo "usage: bridge.sh list [--all] [--brief] | slug <project> | path <project> | archive <slug> | cross <slug> [date] | dir" >&2; exit 2 ;;
 esac

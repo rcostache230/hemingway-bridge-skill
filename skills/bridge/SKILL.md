@@ -34,10 +34,9 @@ script resolves it in this order: `$BRIDGE_DIR`, then `BRIDGE_DIR=…` in `~/.cl
 then `$OBSIDIAN_VAULT/Bridges` when an Obsidian vault is configured, then `~/.claude/bridges`.
 Obsidian is optional. One **open** bridge per project; writing a new one archives the old one to
 `archive/`. A bridge that has been resumed is **crossed** (`crossed: <date>` in its frontmatter)
-and stops appearing at session start, but stays on disk until the next bridge replaces it.
+and stops appearing in the default list, but stays on disk until the next bridge replaces it.
 
-The plugin's SessionStart hook prints the open bridges (inside `<bridges>`) at the start of every
-session, so the next session sees them without being asked.
+In a new session, use `/bridge resume` to pick up saved work or `/bridge list` to see open bridges.
 
 The helper script does the bookkeeping so every session behaves the same way. `BRIDGE` below is
 this skill's base directory (printed as "Base directory for this skill" when the skill loads):
